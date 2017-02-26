@@ -13,33 +13,54 @@ object SemiringTC {
 
     require {
       forall((x: A, y: A, z: A) => add(add(x, y), z) == add(x, add(y, z)))         &&
-      forall((x: A)             => add(zero, x) == add(x, zero))                   &&
       forall((x: A)             => add(zero, x) == x)                              &&
       forall((x: A)             => add(x, zero) == x)                              &&
       forall((x: A, y: A)       => add(x, y) == add(y, x))                         &&
       forall((x: A, y: A, z: A) => mul(mul(x, y), z) == mul(x, mul(y, z)))         &&
-      forall((x: A)             => mul(one, x) == mul(x, one) == x)                &&
+      forall((x: A)             => mul(one, x) == x)                               &&
+      forall((x: A)             => mul(x, one) == x)                               &&
       forall((x: A, y: A, z: A) => mul(x, add(y, z)) == add(mul(x, y), mul(x, z))) &&
       forall((x: A, y: A, z: A) => mul(add(x, y), z) == add(mul(x, z), mul(y, z))) &&
-      forall((x: A)             => mul(zero, x) == mul(x, zero))                   &&
       forall((x: A)             => mul(zero, x) == zero)                           &&
       forall((x: A)             => mul(x, zero) == zero)
     }
 
   }
 
+  sealed abstract class Nat {
+
+    final
+    def +(m: Nat): Nat = this match {
+      case Zero()  => m
+      case Succ(n) => Succ(n + m)
+    }
+
+    final
+    def *(m: Nat): Nat = this match {
+      case Zero()  => Zero()
+      case Succ(n) => m + n * m
+    }
+
+  }
+
+  final case class Succ(n: Nat) extends Nat
+  final case class Zero()       extends Nat
+
+  val natSemiring: Semiring[Nat] =
+    Semiring(
+      zero = Zero(),
+      one  = Succ(Zero()),
+      add  = _ + _,
+      mul  = _ * _
+    )
+
   val intAddSemiring: Semiring[Int] =
-    Semiring[Int](
+    Semiring(
       zero = 0,
       one = 1,
       add = _ + _,
       mul = _ * _
     )
-
-    // - Now considering 'precond. (call inv[Int](Semiring[Int](0, 1, (x$1: Int,  ...)' VC for intAddSemiring @?:?...
-    // => VALID
-    // - Now considering 'body assertion' VC for intAddSemiring @?:?...
-    // Error: Z3 exception
 
 }
 

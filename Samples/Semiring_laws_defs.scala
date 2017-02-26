@@ -62,13 +62,37 @@ object SemiringTC {
       mul  = _ * _
     )
 
+  // ... HANGS ...
+
   val intAddSemiring: Semiring[Int] =
     Semiring(
       zero = 0,
-      one = 1,
-      add = _ + _,
-      mul = _ * _
+      one  = 1,
+      add  = _ + _,
+      mul  = _ * _
     )
+
+  // => VALID
+
+  val boolConjSemiring: Semiring[Boolean] =
+    Semiring(
+      zero = false,
+      one  = true,
+      add  = _ || _,
+      mul  = _ && _
+    )
+
+  // => VALID
+
+  val boolDisjSemiring: Semiring[Boolean] =
+    Semiring(
+      zero = true,
+      one  = false,
+      add  = _ && _,
+      mul  = _ || _
+    )
+
+  // => VALID
 
 }
 

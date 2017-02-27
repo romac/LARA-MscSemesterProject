@@ -4,7 +4,7 @@ import stainless.annotation._
 
 object MonoidTC {
 
-  case class Monoid[A](empty: A, append: (A,A) => A) {
+  case class Monoid[A](empty: A, append: (A, A) => A) {
 
     require {
       law_leftIdentity &&
@@ -31,67 +31,86 @@ object MonoidTC {
     }
   }
 
-  val intAddMonoid: Monoid[Int] = Monoid[Int](0, _ + _)
-  // => VALID
+  sealed abstract class List[A] {
 
-  val intAddMonoid_broken: Monoid[Int] = Monoid[Int](0, _ - _)
-  // - Now considering 'body assertion' VC for intAddMonoid_broken @?:?...
-  // => INVALID
-  // Found counter-example:
-  //  (Empty model)
+    final def ++(other: List[A]): List[A] = (this match {
+      case Nil()       => other
+      case Cons(x, xs) => Cons(x, xs ++ other)
+    }) ensuring { res =>
+      (res.content == this.content ++ that.content) &&
+      (res.size == this.size + that.size) &&
+      (that != Nil[T]() || res == this)
+    }
 
-
-  val intMulMonoid: Monoid[Int] = Monoid[Int](1, _ * _)
-  // ... HANGS ...
-
-  def mkOptionMonoid[A](m: Monoid[A]): Monoid[Option[A]] = {
-    Monoid(
-      None(),
-      (x: Option[A], y: Option[A]) => (x, y) match {
-        case (Some(x0), Some(y0)) =>
-          Some(m.append(x0, y0))
-
-        case (None(), y0) =>
-          y0
-
-        case (x0, None()) =>
-          x0
-
-        case _ =>
-          None()
-      }
-    )
   }
 
-  // ... HANGS ...
+  final case class Cons[A](head: A, tail: List[A]) extends List[A]
+  final case class Nil[A]() extends List[A]
 
-  def mkOptionMonoid_broken[A](m: Monoid[A]): Monoid[Option[A]] = {
-    Monoid(
-      None(),
-      (x: Option[A], y: Option[A]) => (x, y) match {
-        case (Some(x0), Some(y0)) =>
-          Some(m.append(x0, y0))
+  def listMonoid[A]: Monoid[List[A]] =
+    Monoid(Nil(), _ ++ _)
 
-        case _ =>
-          x
-      }
-    )
-  }
+  // val intAddMonoid: Monoid[Int] = Monoid[Int](0, _ + _)
+  // // => VALID
 
-   // - Now considering 'body assertion' VC for mkOptionMonoid_broken @?:?...
-   // => INVALID
-   // Found counter-example:
-   //  m: Monoid[A] -> Monoid[A](A#4, (x$887: A, x$888: A) => if (x$887 == A#4 && x$888 == A#4) {
-   //    A#4
-   //  } else if (x$887 == A#4) {
-   //    A#4
-   //  } else if (x$888 == A#4) {
-   //    A#4
-   //  } else if (true) {
-   //    A#4
-   //  } else {
-   //    A#4
-   //  })
+  // val intAddMonoid_broken: Monoid[Int] = Monoid[Int](0, _ - _)
+  // // - Now considering 'body assertion' VC for intAddMonoid_broken @?:?...
+  // // => INVALID
+  // // Found counter-example:
+  // //  (Empty model)
+
+
+  // val intMulMonoid: Monoid[Int] = Monoid[Int](1, _ * _)
+  // // ... HANGS ...
+
+  // def mkOptionMonoid[A](m: Monoid[A]): Monoid[Option[A]] = {
+  //   Monoid(
+  //     None(),
+  //     (x: Option[A], y: Option[A]) => (x, y) match {
+  //       case (Some(x0), Some(y0)) =>
+  //         Some(m.append(x0, y0))
+
+  //       case (None(), y0) =>
+  //         y0
+
+  //       case (x0, None()) =>
+  //         x0
+
+  //       case _ =>
+  //         None()
+  //     }
+  //   )
+  // }
+
+  // // ... HANGS ...
+
+  // def mkOptionMonoid_broken[A](m: Monoid[A]): Monoid[Option[A]] = {
+  //   Monoid(
+  //     None(),
+  //     (x: Option[A], y: Option[A]) => (x, y) match {
+  //       case (Some(x0), Some(y0)) =>
+  //         Some(m.append(x0, y0))
+
+  //       case _ =>
+  //         x
+  //     }
+  //   )
+  // }
+
+  //  // - Now considering 'body assertion' VC for mkOptionMonoid_broken @?:?...
+  //  // => INVALID
+  //  // Found counter-example:
+  //  //  m: Monoid[A] -> Monoid[A](A#4, (x$887: A, x$888: A) => if (x$887 == A#4 && x$888 == A#4) {
+  //  //    A#4
+  //  //  } else if (x$887 == A#4) {
+  //  //    A#4
+  //  //  } else if (x$888 == A#4) {
+  //  //    A#4
+  //  //  } else if (true) {
+  //  //    A#4
+  //  //  } else {
+  //  //    A#4
+  //  //  })
 
 }
 

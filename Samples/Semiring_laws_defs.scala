@@ -4,6 +4,16 @@ import stainless.annotation._
 
 object SemiringTC {
 
+  @typeclass
+  trait Semiring[A] {
+    def zero: A
+
+    @law
+    def mulOne(x: A): Boolean = {
+      mul(one, x) == x
+    }
+  }
+
   case class Semiring[A](
     zero : A,
     one  : A,

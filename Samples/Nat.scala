@@ -6,13 +6,11 @@ object NatTest {
 
   sealed abstract class Nat {
 
-    final
     def +(m: Nat): Nat = (this match {
       case Zero()  => m
       case Succ(n) => Succ(n + m)
     }) // ensuring (_ == m + this)
 
-    final
     def *(m: Nat): Nat = (this match {
       case Zero()  => Zero()
       case Succ(n) => m + n * m

@@ -17,6 +17,7 @@ object MonoidTC {
 
     def monoid_twice: (A, A) = (monoid_empty, monoid_empty)
 
+    // TODO
     // @law
     // def law_leftIdentity(x: A): Boolean = {
     //   monoid_op(monoid_empty, x) == x

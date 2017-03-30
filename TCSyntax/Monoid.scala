@@ -1,39 +1,105 @@
 
 import stainless.lang.forall
 import stainless.annotation._
-// import stainless.collection._
+import stainless.collection._
 
 object MonoidTC {
 
-  case class Monoid[A](empty: A, op: (A, A) => A) {
+  // abstract class Expr[A] {
+  //   def isLit: Boolean = false
+  // }
+  // case class Lit[A](x: A) extends Expr[A]
+  // case class Add[A](l: A, r: A) extends Expr[A]
 
-    require {
-      law_leftIdentity  &&
-      law_rightIdentity &&
-      law_associative
-    }
+  // abstract class Something {
+  //   def test: Int
+  // }
+  // class Stuff extends Something {
+  //   def test: Int = 42
+  // }
 
-    def twice: (A, A) = (empty, empty)
+  case class Semigroup[A](semigroup_op: (A, A) => A)
 
+  @typeclass
+  abstract class Monoid[A] {
+
+    def monoid_empty: A
+
+    def monoid_op(x: A, y: A): A
+
+    def monoid_twice: (A, A) = (monoid_empty, monoid_empty)
+
+    // TODO
+    // @law
+    // def law_leftIdentity(x: A): Boolean = {
+    //   monoid_op(monoid_empty, x) == x
+    // }
+
+    @law
     def law_leftIdentity = forall { (x: A) =>
-      op(empty, x) == x
+      monoid_op(monoid_empty, x) == x
     }
 
+    @law
     def law_rightIdentity = forall { (x: A) =>
-      op(x, empty) == x
+      monoid_op(x, monoid_empty) == x
     }
 
+    @law
     def law_associative = forall { (x: A, y: A, z: A) =>
-      op(op(x, y), z) == op(x, op(y, z))
+      monoid_op(monoid_op(x, y), z) == monoid_op(x, monoid_op(y, z))
     }
+
   }
 
-  val intAddMonoid: Monoid[Int] = Monoid[Int](0, _ + _)
+  // case class Monoid[A](empty: A, op: (A, A) => A) {
 
-  // def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
-  //   case Nil()       => M.empty
-  //   case Cons(x, xs) => M.op(x, fold(xs))
+  //   require {
+  //     forall { (x: A) => law_leftIdentity(x) } &&
+  //     law_rightIdentity &&
+  //     law_associative
+  //   }
+
+  //   def twice: (A, A) = (empty, empty)
+
+  //   def law_leftIdentity = forall { (x: A) =>
+  //     op(empty, x) == x
+  //   }
+
+  //   def law_rightIdentity = forall { (x: A) =>
+  //     op(x, empty) == x
+  //   }
+
+  //   def law_associative = forall { (x: A, y: A, z: A) =>
+  //     op(op(x, y), z) == op(x, op(y, z))
+  //   }
   // }
+
+  object intAddMonoidObj extends Monoid[Int] {
+    def monoid_empty: Int         = 0
+    def monoid_op(a: Int, b: Int) = a + b
+  }
+
+  // def intAddMonoidObj = Monoid[Int](0, a + b)
+
+  def intAddMonoidDef = new Monoid[Int] {
+    def monoid_empty: Int         = 0
+    def monoid_op(a: Int, b: Int) = a + b
+  }
+
+  // def intAddMonoidObj = Monoid[Int](0, a + b)
+
+  val intAddMonoidVal = new Monoid[Int] {
+    def monoid_empty: Int         = 0
+    def monoid_op(a: Int, b: Int) = a + b
+  }
+
+  // def intAddMonoidObj = Monoid[Int](0, a + b)
+
+  def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
+    case Nil()       => M.monoid_empty
+    case Cons(x, xs) => M.monoid_op(x, fold(xs))
+  }
 
 }
 

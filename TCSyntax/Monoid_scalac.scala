@@ -12,13 +12,21 @@ object MonoidTC {
   def forall[A,B,C](p: (A,B,C) => Boolean): Boolean = sys.error("Can't execute quantified proposition")
 
   @typeclass
-  abstract class Monoid[A] {
+  abstract class Semigroup[A] {
+    def semigroup_op(x: A, y: A): A
+
+    @law
+    def law_associative = forall { (x: A, y: A, z: A) =>
+      semigroup_op(semigroup_op(x, y), z) == semigroup_op(x, semigroup_op(y, z))
+    }
+  }
+
+  @typeclass
+  abstract class Monoid[A](implicit val semigroup: Semigroup[A]) {
 
     def monoid_empty: A
 
-    def monoid_op(x: A, y: A): A
-
-    def monoid_twice: (A, A) = (monoid_empty, monoid_empty)
+    def monoid_op(x: A, y: A): A = semigroup.semigroup_op(x, y)
 
     @law
     def law_leftIdentity = forall { (x: A) =>
@@ -37,53 +45,25 @@ object MonoidTC {
 
   }
 
-  // case class Monoid[A](empty: A, op: (A, A) => A) {
-
-  //   require {
-  //     law_leftIdentity  &&
-  //     law_rightIdentity &&
-  //     law_associative
-  //   }
-  //
-  //   def twice: (A, A) = (empty, empty)
-
-  //   def law_leftIdentity = forall { (x: A) =>
-  //     op(empty, x) == x
-  //   }
-
-  //   def law_rightIdentity = forall { (x: A) =>
-  //     op(x, empty) == x
-  //   }
-
-  //   def law_associative = forall { (x: A, y: A, z: A) =>
-  //     op(op(x, y), z) == op(x, op(y, z))
-  //   }
-  // }
+  @instance
+  implicit def intAddSemigroup = new Semigroup[Int] {
+    def semigroup_op(x: Int, y: Int): Int = x + y
+  }
 
   @instance
   object intAddMonoidObj extends Monoid[Int] {
-    def monoid_empty: Int         = 0
-    def monoid_op(a: Int, b: Int) = a + b
+    def monoid_empty: Int = 0
   }
 
   @instance
   def intAddMonoidDef = new Monoid[Int] {
-    def monoid_empty: Int         = 0
-    def monoid_op(a: Int, b: Int) = a + b
+    def monoid_empty: Int = 0
   }
 
   @instance
   val intAddMonoidVal = new Monoid[Int] {
-    def monoid_empty: Int         = 0
-    def monoid_op(a: Int, b: Int) = a + b
+    def monoid_empty: Int = 0
   }
-
-  // val intAddMonoid: Monoid[Int] = Monoid[Int](0, _ + _)
-
-  // def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
-  //   case Nil()       => M.empty
-  //   case Cons(x, xs) => M.op(x, fold(xs))
-  // }
 
 }
 

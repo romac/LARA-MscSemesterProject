@@ -4,7 +4,7 @@ import stainless.annotation._
 
 object Monoid_Nat_proof {
 
-  @typeclass
+  // @typeclass
   abstract class Monoid[A] {
 
     def empty: A
@@ -55,15 +55,24 @@ object Monoid_Nat_proof {
     (n + m) + l == n + (m + l)
   } holds
 
-  def natPlusMonoid: Monoid[Nat] = new Monoid[Nat] {
+
+
+  def natPlusMonoid: Monoid[Nat] = {
+    assert(forall { (x: Int) => lemma_leftIdentityZeroPlus(x) })
+
+    new Monoid[Nat] {
 
     def empty: Nat              = Zero()
 
     def combine(a: Nat, b: Nat) = a + b
 
-    @lawProof(law_leftIdentity)
-    def proof_leftIdentity(x: Nat) =
-      lemma_leftIdentityZeroPlus(x)
+
+    override def law_leftIdentity(x: Int) =
+      super.law_leftIdentity because lemma_leftIdentityZeroPlus(X)
+
+    // @lawProof(law_leftIdentity)
+    // def proof_leftIdentity(x: Nat) =
+    //   lemma_leftIdentityZeroPlus(x)
 
     @lawProof(law_rightIdentity)
     def proof_leftIdentity(x: Nat) =

@@ -1,39 +1,43 @@
 
-import stainless.lang.forall
+import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
 object MonoidTC {
 
-  @typeclass
   abstract class Semigroup[A] {
     def semigroup_op(x: A, y: A): A
 
     @law
-    def law_associative = forall { (x: A, y: A, z: A) =>
+    def law_associative(x: A, y: A, z: A): Boolean = {
       semigroup_op(semigroup_op(x, y), z) == semigroup_op(x, semigroup_op(y, z))
     }
   }
 
-  implicit def intAddSemigroup = new Semigroup[Int] {
+  implicit def intAddSemigroup: Semigroup[Int] = new Semigroup[Int] {
     def semigroup_op(x: Int, y: Int): Int = x + y
   }
 
-  @typeclass
   abstract class Monoid[A](implicit val semigroup: Semigroup[A]) {
 
     def monoid_empty: A
 
+    @inline
     def monoid_op(x: A, y: A): A = semigroup.semigroup_op(x, y)
 
     @law
-    def law_leftIdentity = forall { (x: A) =>
+    def law_leftIdentity(x: A): Boolean = {
       monoid_op(monoid_empty, x) == x
     }
 
     @law
-    def law_rightIdentity = forall { (x: A) =>
+    def law_rightIdentity(x: A): Boolean = {
       monoid_op(x, monoid_empty) == x
+    }
+
+    @law
+    def law_wrong(x: A): Int = {
+      42
     }
 
   }
@@ -56,28 +60,32 @@ object MonoidTC {
 
   // }
 
-  implicit object intAddMonoidObj extends Monoid[Int] {
+  // implicit object intAddMonoidObj extends Monoid[Int](intAddSemigroup) {
+  //   def monoid_empty: Int = 0
+  // }
+
+  // def intAddMonoidObj = Monoid[Int](intAddSemigroup, 0, a + b)
+
+  implicit def intAddMonoidDef: Monoid[Int] = new Monoid[Int] {
     def monoid_empty: Int = 0
   }
 
-  // def intAddMonoidObj = Monoid[Int](0, a + b)
+  // def intAddMonoidObj = Monoid[Int](intAddSemigroup, 0, a + b)
 
-  def intAddMonoidDef = new Monoid[Int] {
-    def monoid_empty: Int = 0
-  }
+  // implicit val intAddMonoidVal = new Monoid[Int](intAddSemigroup) {
+  //   def monoid_empty: Int = 0
+  // }
 
-  // def intAddMonoidObj = Monoid[Int](0, a + b)
-
-  val intAddMonoidVal = new Monoid[Int] {
-    def monoid_empty: Int = 0
-  }
-
-  // def intAddMonoidObj = Monoid[Int](0, a + b)
+  // def intAddMonoidObj = Monoid[Int](intAddSemigroup, 0, a + b)
 
   def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
     case Nil()       => M.monoid_empty
     case Cons(x, xs) => M.monoid_op(x, fold(xs))
   }
+
+  def test[A](implicit M: Monoid[A]) = {
+    M.monoid_op(M.monoid_empty, M.monoid_empty) == M.monoid_empty
+  } holds
 
 }
 

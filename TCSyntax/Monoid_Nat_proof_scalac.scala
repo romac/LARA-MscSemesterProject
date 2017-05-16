@@ -1,9 +1,35 @@
 
-import stainless.lang._
-import stainless.annotation._
-import stainless.proof._
+import scala.annotation.Annotation
 
 object Monoid_Nat_proof {
+
+  class law    extends Annotation
+  class induct extends Annotation
+
+  implicit class BooleanDecorations(val underlying: Boolean) {
+
+    @inline
+    def holds: Boolean = {
+      underlying
+    } ensuring {
+      (res: Boolean) => res
+    }
+
+    @inline
+    def holds(becauseOfThat: Boolean): Boolean = {
+      underlying
+    } ensuring {
+      (res: Boolean) => becauseOfThat && res
+    }
+
+    @inline
+    def ==>(that: => Boolean): Boolean = {
+      if (underlying) that else true
+    }
+
+    def because(proof: Boolean): Boolean = proof && underlying
+
+  }
 
   abstract class Monoid[A] {
 
@@ -21,10 +47,10 @@ object Monoid_Nat_proof {
       combine(x, empty) == x
     }
 
-    // @law
-    // def law_associative(x: A, y: A, z: A): Boolean = {
-    //   combine(combine(x, y), z) == combine(x, combine(y, z))
-    // }
+    @law
+    def law_associative(x: A, y: A, z: A): Boolean = {
+      combine(combine(x, y), z) == combine(x, combine(y, z))
+    }
 
   }
 
@@ -40,23 +66,20 @@ object Monoid_Nat_proof {
   final case class Succ(n: Nat) extends Nat
   final case class Zero()       extends Nat
 
-  @inline
   @induct
   def lemma_leftIdentityZeroPlus(n: Nat): Boolean = {
     Zero() + n == n
   } holds
 
-  @inline
   @induct
   def lemma_rightIdentityZeroPlus(n: Nat): Boolean = {
     n + Zero() == n
   } holds
 
-  // @inline
-  // @induct
-  // def lemma_associativePlus(n: Nat, m: Nat, l: Nat): Boolean = {
-  //   (n + m) + l == n + (m + l)
-  // } holds
+  @induct
+  def lemma_associativePlus(n: Nat, m: Nat, l: Nat): Boolean = {
+    (n + m) + l == n + (m + l)
+  } holds
 
   def natPlusMonoid: Monoid[Nat] = new Monoid[Nat] {
 
@@ -70,30 +93,8 @@ object Monoid_Nat_proof {
     override def law_rightIdentity(x: Nat) =
       super.law_rightIdentity(x) because lemma_rightIdentityZeroPlus(x)
 
-    // override def law_associative(x: Nat, y: Nat, z: Nat) =
-    //   super.law_associative(x, y, z) because lemma_associativePlus(x, y, z)
-
-  }
-
-  def natPlusMonoid2: Monoid[Nat] = new Monoid[Nat] {
-
-    override def empty: Nat = Zero()
-
-    override def combine(a: Nat, b: Nat) = a + b
-
-    override def law_leftIdentity(x: Nat) =
-      super.law_leftIdentity(x) because (Zero() + x == x)
-
-    override def law_rightIdentity(x: Nat) =
-      super.law_rightIdentity(x) because (x + Zero() == x)
-
-    // override def law_associative(x: Nat, y: Nat, z: Nat) =
-    //   super.law_associative(x, y, z) && {
-    //     (x match {
-    //       case Zero() => true
-    //       case Succ(n) => true // lemma_associativePlus(n, y, z)
-    //     })
-    //   }
+    override def law_associative(x: Nat, y: Nat, z: Nat) =
+      super.law_associative(x, y, z) because lemma_associativePlus(x, y, z)
   }
 
   // def natPlusMonoid: Monoid[Nat] = {

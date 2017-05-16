@@ -35,11 +35,6 @@ object MonoidTC {
       monoid_op(x, monoid_empty) == x
     }
 
-    @law
-    def law_wrong(x: A): Int = {
-      42
-    }
-
   }
 
   // case class Monoid[A](semigroup: Semigroup[A], empty: A) {

@@ -1,0 +1,83 @@
+No-@inline
+----------
+
+- Now considering 'adt invariant' VC for natPlusMonoid @?:?...
+
+∀ x: Nat. lemma_leftIdentityZeroPlus(x) &&
+∀ x: Nat. lemma_rightIdentityZeroPlus(x) &&
+{
+  val thiss: Monoid[Nat] = Monoid[Nat](
+    fun2[Nat, Nat, Nat]((a: Nat, b: Nat) => +(a, b), (a: Nat, b: Nat) => true),
+    fun0[Zero](() => Zero(), () => true)
+  )
+
+  ¬ ∀ x$217: Nat, x$218: Nat. thiss.combine.pre(x$217, x$218) ||
+  ¬ thiss.empty.pre() ||
+  ¬ ∀ x: Nat. law_rightIdentity[Nat](thiss, x) ||
+  ¬ ∀ x: Nat. law_leftIdentity[Nat](thiss, x)
+}
+
+=> TIMEOUT
+
+
+@inline
+-------
+
+- Now considering 'body assertion' VC for natPlusMonoid @?:?...
+
+ ∀ x: Nat. {
+  val res: Boolean = +(Zero(), x) == x
+  assume(res)
+  res
+} &&
++(x, Zero()) ≠ x
+
+=> TIMEOUT
+
+- Now considering 'adt invariant' VC for natPlusMonoid @?:?...
+
+∀ x: Nat. {
+  val res: Boolean = +(Zero(), x) == x
+  assume(res)
+  res
+} &&
+∀ x: Nat. {
+  val res: Boolean = +(x, Zero()) == x
+  assume(res)
+  res
+} &&
+{
+  val thiss: Monoid[Nat] = Monoid[Nat](
+    fun2[Nat, Nat, Nat]((a: Nat, b: Nat) => +(a, b), (a: Nat, b: Nat) => true),
+    fun0[Zero](() => Zero(), () => true)
+  )
+
+  ¬ ∀ x$223: Nat, x$224: Nat. thiss.combine.pre(x$223, x$224) ||
+  ¬ thiss.empty.pre() ||
+  ¬ ∀ x: Nat. law_rightIdentity[Nat](thiss, x) ||
+  ¬ ∀ x: Nat. law_leftIdentity[Nat](thiss, x)
+
+=> VALID
+
+
+Manual inlining
+---------------
+
+- Now considering 'adt invariant' VC for natPlusMonoid2 @?:?...
+
+∀ x: Nat. (+(x, Zero()) == x) &&
+∀ x: Nat. (+(Zero(), x) == x) &&
+{
+  val thiss: Monoid[Nat] = Monoid[Nat](
+    fun2[Nat, Nat, Nat]((a: Nat, b: Nat) => +(a, b), (a: Nat, b: Nat) => true),
+    fun0[Zero](() => Zero(), () => true)
+  )
+
+  ¬ ∀ x$241: Nat, x$242: Nat. thiss.combine.pre(x$241, x$242) ||
+  ¬ thiss.empty.pre() ||
+  ¬ ∀ x: Nat. law_rightIdentity[Nat](thiss, x) ||
+  ¬ ∀ x: Nat. law_leftIdentity[Nat](thiss, x)
+}
+
+=> VALID
+

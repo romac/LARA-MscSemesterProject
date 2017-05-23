@@ -50,10 +50,10 @@ object Monoid_Nat_proof {
     n + Zero() == n
   } holds
 
-  @induct
-  def lemma_associativePlus(n: Nat, m: Nat, l: Nat): Boolean = {
-    (n + m) + l == n + (m + l)
-  } holds
+  // @induct
+  // def lemma_associativePlus(n: Nat, m: Nat, l: Nat): Boolean = {
+  //   (n + m) + l == n + (m + l)
+  // } holds
 
   def natPlusMonoid: Monoid[Nat] = new Monoid[Nat] {
 

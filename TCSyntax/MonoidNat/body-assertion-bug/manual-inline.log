@@ -1,0 +1,45 @@
+[  Info  ]  - Now considering 'lambda precondition' VC for inv @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'lambda precondition' VC for inv @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'lambda precondition' VC for inv @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'lambda precondition' VC for inv @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'lambda precondition' VC for inv @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'lambda precondition' VC for inv @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'body assertion' VC for natPlusPseudoMonoid @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'adt invariant' VC for natPlusPseudoMonoid @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'postcond. (ind. on n: Nat / Succ)' VC for lemma_leftIdentityZeroPlus @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'postcond. (ind. on n: Nat / Zero)' VC for lemma_leftIdentityZeroPlus @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'postcond. (ind. on n: Nat / Succ)' VC for lemma_rightIdentityZeroPlus @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'postcond. (ind. on n: Nat / Zero)' VC for lemma_rightIdentityZeroPlus @?:?...
+[  Info  ]  => VALID
+[  Info  ]  - Now considering 'match exhaustiveness' VC for + @?:?...
+[  Info  ]  => VALID
+[  Info  ]   ┌──────────────────────┐
+[  Info  ] ╔═╡ Verification Summary ╞══════════════════════════════════════════════════════════════════════╗
+[  Info  ] ║ └──────────────────────┘                                                                      ║
+[  Info  ] ║ +                            match exhaustiveness               ?:?  valid  nativez3  0.041   ║
+[  Info  ] ║ inv                          lambda precondition                ?:?  valid  nativez3  0.055   ║
+[  Info  ] ║ inv                          lambda precondition                ?:?  valid  nativez3  0.026   ║
+[  Info  ] ║ inv                          lambda precondition                ?:?  valid  nativez3  0.030   ║
+[  Info  ] ║ inv                          lambda precondition                ?:?  valid  nativez3  0.023   ║
+[  Info  ] ║ inv                          lambda precondition                ?:?  valid  nativez3  0.232   ║
+[  Info  ] ║ inv                          lambda precondition                ?:?  valid  nativez3  0.383   ║
+[  Info  ] ║ lemma_leftIdentityZeroPlus   postcond. (ind. on n: Nat / Succ)  ?:?  valid  nativez3  0.042   ║
+[  Info  ] ║ lemma_leftIdentityZeroPlus   postcond. (ind. on n: Nat / Zero)  ?:?  valid  nativez3  0.037   ║
+[  Info  ] ║ lemma_rightIdentityZeroPlus  postcond. (ind. on n: Nat / Succ)  ?:?  valid  nativez3  0.047   ║
+[  Info  ] ║ lemma_rightIdentityZeroPlus  postcond. (ind. on n: Nat / Zero)  ?:?  valid  nativez3  0.040   ║
+[  Info  ] ║ natPlusPseudoMonoid          adt invariant                      ?:?  valid  nativez3  0.497   ║
+[  Info  ] ║ natPlusPseudoMonoid          body assertion                     ?:?  valid  nativez3  0.213   ║
+[  Info  ] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+[  Info  ] ║ total: 13     valid: 13     invalid: 0      unknown: 0                                  1.666 ║
+[  Info  ] ╚═══════════════════════════════════════════════════════════════════════════════════════════════╝

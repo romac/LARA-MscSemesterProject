@@ -1,0 +1,92 @@
+[[33mWarning [0m] warning: there were two feature warnings; re-run with -feature for details
+[[34m  Info  [0m]  - Now considering 'lambda precondition' VC for inv @?:?...
+instExpr:false
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'lambda precondition' VC for inv @?:?...
+instExpr:∀x$98: A, x$99: A. thiss.combine.pre(x$98, x$99) && ¬thiss.combine.pre(thiss.empty, x)
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'lambda precondition' VC for inv @?:?...
+instExpr:∀x$98: A, x$99: A. thiss.combine.pre(x$98, x$99) && ∀x: A. (thiss.combine.f(thiss.empty, x) == x) && ¬thiss.combine.pre(x, thiss.empty)
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'lambda precondition' VC for inv @?:?...
+instExpr:false
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'lambda precondition' VC for inv @?:?...
+instExpr:false
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'lambda precondition' VC for inv @?:?...
+instExpr:false
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcond. (ind. on n: Nat / Succ)' VC for lemma_rightIdentityZeroPlus @?:?...
+instExpr:n.isInstanceOf[Succ] && +(n.asInstanceOf[Succ].n, Zero()) == n.asInstanceOf[Succ].n && +(n, Zero()) ≠ n
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcond. (ind. on n: Nat / Zero)' VC for lemma_rightIdentityZeroPlus @?:?...
+instExpr:n.isInstanceOf[Zero] && +(n, Zero()) ≠ n
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcond. (ind. on n: Nat / Succ)' VC for lemma_leftIdentityZeroPlus @?:?...
+instExpr:n.isInstanceOf[Succ] && +(Zero(), n.asInstanceOf[Succ].n) == n.asInstanceOf[Succ].n && +(Zero(), n) ≠ n
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'postcond. (ind. on n: Nat / Zero)' VC for lemma_leftIdentityZeroPlus @?:?...
+instExpr:n.isInstanceOf[Zero] && +(Zero(), n) ≠ n
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'body assertion' VC for natPlusMonoid @?:?...
+instExpr:¬∀x: Nat. {
+  val res: Boolean = +(Zero(), x) == x
+  assume(res)
+  res
+} || ¬∀x: Nat. {
+  val res: Boolean = +(x, Zero()) == x
+  assume(res)
+  res
+}
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'body assertion' VC for natPlusMonoid @?:?...
+instExpr:+(Zero(), x) ≠ x
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'body assertion' VC for natPlusMonoid @?:?...
+instExpr:∀x: Nat. {
+  val res: Boolean = +(Zero(), x) == x
+  assume(res)
+  res
+} && +(x, Zero()) ≠ x
+[[34m  Info  [0m] 
+[[33mWarning [0m] Interrupted...
+[[33mWarning [0m]  => CANCELLED
+[[34m  Info  [0m]  - Now considering 'adt invariant' VC for natPlusMonoid @?:?...
+instExpr:∀x: Nat. {
+  val res: Boolean = +(Zero(), x) == x
+  assume(res)
+  res
+} && ∀x: Nat. {
+  val res: Boolean = +(x, Zero()) == x
+  assume(res)
+  res
+} && {
+  val thiss: Monoid[Nat] = Monoid[Nat](Zero(), fun2[Nat, Nat, Nat]((x$1: Nat, x$2: Nat) => +(x$1, x$2), (x$1: Nat, x$2: Nat) => true))
+  ¬∀x$253: Nat, x$254: Nat. thiss.combine.pre(x$253, x$254) || ¬∀x: Nat. (thiss.combine.f(thiss.empty, x) == x) || ¬∀x: Nat. (thiss.combine.f(x, thiss.empty) == x)
+}
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]  - Now considering 'match exhaustiveness' VC for + @?:?...
+instExpr:false
+[[34m  Info  [0m]  => VALID
+[[34m  Info  [0m]   ┌──────────────────────┐
+[[34m  Info  [0m] ╔═╡ Verification Summary ╞══════════════════════════════════════════════════════════════════════════╗
+[[34m  Info  [0m] ║ └──────────────────────┘                                                                          ║
+[[34m  Info  [0m] ║ +                            match exhaustiveness               ?:?  valid      nativez3  0.021   ║
+[[34m  Info  [0m] ║ inv                          lambda precondition                ?:?  valid      nativez3  0.022   ║
+[[34m  Info  [0m] ║ inv                          lambda precondition                ?:?  valid      nativez3  0.071   ║
+[[34m  Info  [0m] ║ inv                          lambda precondition                ?:?  valid      nativez3  0.023   ║
+[[34m  Info  [0m] ║ inv                          lambda precondition                ?:?  valid      nativez3  0.171   ║
+[[34m  Info  [0m] ║ inv                          lambda precondition                ?:?  valid      nativez3  0.417   ║
+[[34m  Info  [0m] ║ inv                          lambda precondition                ?:?  valid      nativez3  0.022   ║
+[[34m  Info  [0m] ║ lemma_leftIdentityZeroPlus   postcond. (ind. on n: Nat / Succ)  ?:?  valid      nativez3  0.048   ║
+[[34m  Info  [0m] ║ lemma_leftIdentityZeroPlus   postcond. (ind. on n: Nat / Zero)  ?:?  valid      nativez3  0.050   ║
+[[34m  Info  [0m] ║ lemma_rightIdentityZeroPlus  postcond. (ind. on n: Nat / Succ)  ?:?  valid      nativez3  0.307   ║
+[[34m  Info  [0m] ║ lemma_rightIdentityZeroPlus  postcond. (ind. on n: Nat / Zero)  ?:?  valid      nativez3  0.078   ║
+[[34m  Info  [0m] ║ natPlusMonoid                adt invariant                      ?:?  valid      nativez3  0.286   ║
+[[34m  Info  [0m] ║ natPlusMonoid                body assertion                     ?:?  valid      nativez3  0.031   ║
+[[34m  Info  [0m] ║ natPlusMonoid                body assertion                     ?:?  valid      nativez3  0.130   ║
+[[34m  Info  [0m] ║ natPlusMonoid                body assertion                     ?:?  cancelled  nativez3  62.229  ║
+[[34m  Info  [0m] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+[[34m  Info  [0m] ║ total: 15     valid: 14     invalid: 0      unknown: 1                                     63.906 ║
+[[34m  Info  [0m] ╚═══════════════════════════════════════════════════════════════════════════════════════════════════╝

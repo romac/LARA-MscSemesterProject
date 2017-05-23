@@ -25,7 +25,7 @@ No-@inline
 
 - Now considering 'body assertion' VC for natPlusMonoid @?:?...
 
- ∀ x: Nat. {
+∀ x: Nat. {
   val res: Boolean = +(Zero(), x) == x
   assume(res)
   res

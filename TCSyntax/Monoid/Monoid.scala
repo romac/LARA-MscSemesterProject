@@ -38,9 +38,9 @@ object MonoidTC {
     case Cons(x, xs) => M.append(x, fold(xs))
   }
 
-  // def test[A](implicit M: Monoid[A]) = {
-  //   M.append(M.empty, M.empty) == M.empty
-  // } holds
+  def test[A](implicit M: Monoid[A]) = {
+    M.append(M.empty, M.empty) == M.empty
+  } holds
 
 }
 

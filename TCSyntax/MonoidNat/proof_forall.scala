@@ -21,10 +21,10 @@ object Monoid_Nat_proof {
       combine(x, empty) == x
     }
 
-    // @law
-    // def law_associative = forall { (x: A, y: A, z: A) =>
-    //   combine(combine(x, y), z) == combine(x, combine(y, z))
-    // }
+    @law
+    def law_associative = forall { (x: A, y: A, z: A) =>
+      combine(combine(x, y), z) == combine(x, combine(y, z))
+    }
 
   }
 
@@ -50,10 +50,10 @@ object Monoid_Nat_proof {
     n + Zero() == n
   } holds
 
-  // @induct
-  // def lemma_associativePlus(n: Nat, m: Nat, l: Nat): Boolean = {
-  //   (n + m) + l == n + (m + l)
-  // } holds
+  @induct
+  def lemma_associativePlus(n: Nat, m: Nat, l: Nat): Boolean = {
+    (n + m) + l == n + (m + l)
+  } holds
 
   def natPlusMonoid: Monoid[Nat] = new Monoid[Nat] {
 
@@ -69,9 +69,9 @@ object Monoid_Nat_proof {
       super.law_rightIdentity because lemma_rightIdentityZeroPlus(x)
     }
 
-    // override def law_associative = forall { (x: Nat, y: Nat, z: Nat) =>
-    //   super.law_associative because lemma_associativePlus(x, y, z)
-    // }
+    override def law_associative = forall { (x: Nat, y: Nat, z: Nat) =>
+      super.law_associative because lemma_associativePlus(x, y, z)
+    }
 
   }
 
@@ -89,9 +89,9 @@ object Monoid_Nat_proof {
       super.law_rightIdentity.holds because (x + Zero() == x)
     }
 
-    // override def law_associative = forall { (x: Nat, y: Nat, z: Nat) =>
-    //   super.law_associative && lemma_associativePlus(x, y, z)
-    // }
+    override def law_associative = forall { (x: Nat, y: Nat, z: Nat) =>
+      super.law_associative && (x + y) + z == x + (y + z)
+    }
 
   }
 

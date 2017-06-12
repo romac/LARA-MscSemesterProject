@@ -16,30 +16,15 @@ object TCEq {
     def append(x: Int, y: Int): Int = x + y
   }
 
-  def bar: Monoid[Int] = new Monoid[Int] {
-    def empty: Int = 0
-    def append(x: Int, y: Int): Int = x + y
-  }
-
-  def baz: Monoid[Int] = new Monoid[Int] {
-    def empty: Int = 1
-    def append(x: Int, y: Int): Int = x * y
-  }
-
-  def lemma_foo_bar = {
-    foo == bar
-  } holds
-
-  def lemma_foo_baz = {
-    foo == baz
-  } holds
-
-  def lemma_bar_baz = {
-    bar == baz
-  } holds
-
   def lemma_eq[A](a: Monoid[A], b: Monoid[A]) = {
     a == b
+  } holds
+
+  val set1 = Set(foo)
+  val set2 = Set(foo, foo)
+
+  def lemma_set = {
+    set1 == set2
   } holds
 
 }

@@ -5,6 +5,7 @@ import stainless.proof._
 
 object Monoid_Nat_proof {
 
+  @coherent
   abstract class Monoid[A] {
 
     def empty: A
@@ -40,16 +41,19 @@ object Monoid_Nat_proof {
   final case class Succ(n: Nat) extends Nat
   final case class Zero()       extends Nat
 
+  @inline
   @induct
   def lemma_leftIdentityZeroPlus(n: Nat): Boolean = {
     Zero() + n == n
   } holds
 
+  @inline
   @induct
   def lemma_rightIdentityZeroPlus(n: Nat): Boolean = {
     n + Zero() == n
   } holds
 
+  @inline
   @induct
   def lemma_associativePlus(n: Nat, m: Nat, l: Nat): Boolean = {
     (n + m) + l == n + (m + l)
@@ -71,26 +75,6 @@ object Monoid_Nat_proof {
 
     override def law_associative = forall { (x: Nat, y: Nat, z: Nat) =>
       super.law_associative because lemma_associativePlus(x, y, z)
-    }
-
-  }
-
-  def natPlusMonoid2: Monoid[Nat] = new Monoid[Nat] {
-
-    override def empty: Nat = Zero()
-
-    override def combine(a: Nat, b: Nat) = a + b
-
-    override def law_leftIdentity = forall { (x: Nat) =>
-      super.law_leftIdentity because (Zero() + x == x)
-    }
-
-    override def law_rightIdentity = forall { (x: Nat) =>
-      super.law_rightIdentity.holds because (x + Zero() == x)
-    }
-
-    override def law_associative = forall { (x: Nat, y: Nat, z: Nat) =>
-      super.law_associative && (x + y) + z == x + (y + z)
     }
 
   }

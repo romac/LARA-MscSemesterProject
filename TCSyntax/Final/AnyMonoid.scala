@@ -28,11 +28,11 @@ object SumMonoid {
 
   }
 
-  final case class Sum(value: BigInt)
+  final case class Any(value: Boolean)
 
-  implicit def sumMonoid = new Monoid[Sum] {
-    def empty: Sum = Sum(0)
-    def append(x: Sum, y: Sum): Sum = Sum(x.value + y.value)
+  implicit def anyMonoid = new Monoid[Any] {
+    def empty: Any = Any(false)
+    def append(x: Any, y: Any): Any = Any(x.value || y.value)
   }
 
   def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
@@ -44,16 +44,16 @@ object SumMonoid {
     fold(list.map(f))
   }
 
-  def lemma_fold = {
-    val xs: List[BigInt] = List(1, 2, 3)
-    val sum = fold(xs.map(Sum(_)))
-    sum.value == 6
+  def lemma_foldMap_false = {
+    val xs = List(false, false, false)
+    val sum = foldMap(xs)(Any(_))
+    sum.value == false
   } holds
 
-  def lemma_foldMap = {
-    val xs: List[BigInt] = List(1, 2, 3)
-    val sum = foldMap(xs)(Sum(_))
-    sum.value == 6
+  def lemma_foldMap_true = {
+    val xs = List(false, true, false)
+    val sum = foldMap(xs)(Any(_))
+    sum.value == true
   } holds
 
 }

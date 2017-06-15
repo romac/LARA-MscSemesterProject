@@ -3,17 +3,13 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object IntMonoidDef {
+object EndoMonoid {
 
   abstract class Monoid[A] {
 
     def empty: A
 
     def append(x: A, y: A): A
-
-    def concat(list: List[A]): A = {
-      list.foldRight(empty)(append)
-    }
 
     @law
     def law_leftIdentity = forall { (x: A) =>
@@ -32,9 +28,16 @@ object IntMonoidDef {
 
   }
 
-  implicit def intAddMonoidDef: Monoid[Int] = new Monoid[Int] {
-    def empty: Int = 0
-    def append(x: Int, y: Int): Int = x + y
+  final case class Endo[A](appEndo: A => A)
+
+  implicit def endoMonoid[A]: Monoid[Endo[A]] = new Monoid[Endo[A]] {
+
+    def empty: Endo[A] =
+      Endo(x => x)
+
+    def append(f: Endo[A], g: Endo[A]): Endo[A] =
+      Endo(x => f.appEndo(g.appEndo(x)))
+
   }
 
   def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
@@ -42,10 +45,15 @@ object IntMonoidDef {
     case Cons(x, xs) => M.append(x, fold(xs))
   }
 
-  def test(implicit M: Monoid[Int]) = {
-    val xs: List[Int] = List(1, 2, 3, 4, 5, 6)
-    M.concat(xs) == 21
-  }.holds
+  def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
+    fold(list.map(f))
+  }
+
+  def lemma_foldMap_endo = {
+    val fs: List[Int => Int] = List(_ + 2, _ * 10)
+    val composed = foldMap(fs)(Endo(_))
+    composed.appEndo(2) == 42
+  } holds
 
 }
 

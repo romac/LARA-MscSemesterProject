@@ -3,17 +3,13 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object IntMonoidDef {
+object FirstMonoid {
 
   abstract class Monoid[A] {
 
     def empty: A
 
     def append(x: A, y: A): A
-
-    def concat(list: List[A]): A = {
-      list.foldRight(empty)(append)
-    }
 
     @law
     def law_leftIdentity = forall { (x: A) =>
@@ -32,9 +28,18 @@ object IntMonoidDef {
 
   }
 
-  implicit def intAddMonoidDef: Monoid[Int] = new Monoid[Int] {
-    def empty: Int = 0
-    def append(x: Int, y: Int): Int = x + y
+  final case class First[A](getFirst: Option[A])
+
+  object First {
+    def apply[A](a: A): First[A] = First(Some(a))
+  }
+
+  implicit def firstMonoid[A]: Monoid[First[A]] = new Monoid[First[A]] {
+    def empty: First[A] = First(None[A]())
+    def append(x: First[A], y: First[A]): First[A] = x.getFirst match {
+      case Some(a) => x
+      case None() => y
+    }
   }
 
   def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
@@ -42,10 +47,15 @@ object IntMonoidDef {
     case Cons(x, xs) => M.append(x, fold(xs))
   }
 
-  def test(implicit M: Monoid[Int]) = {
-    val xs: List[Int] = List(1, 2, 3, 4, 5, 6)
-    M.concat(xs) == 21
-  }.holds
+  def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
+    fold(list.map(f))
+  }
+
+  def lemma_foldMap_first = {
+    val xs = List(true, false, false)
+    val first = foldMap(xs)(First(_)).getFirst
+    first == Some(true)
+  } holds
 
 }
 

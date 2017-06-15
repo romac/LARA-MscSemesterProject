@@ -3,7 +3,7 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object MonoidForall {
+object IntMonoidObj {
 
   abstract class Monoid[A] {
 

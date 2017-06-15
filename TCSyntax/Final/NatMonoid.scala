@@ -41,19 +41,19 @@ object Monoid_Nat_proof {
   final case class Succ(n: Nat) extends Nat
   final case class Zero()       extends Nat
 
-  @inline
+  // @inline
   @induct
   def lemma_leftIdentityZeroPlus(n: Nat): Boolean = {
     Zero() + n == n
   } holds
 
-  @inline
+  // @inline
   @induct
   def lemma_rightIdentityZeroPlus(n: Nat): Boolean = {
     n + Zero() == n
   } holds
 
-  @inline
+  // @inline
   @induct
   def lemma_associativePlus(n: Nat, m: Nat, l: Nat): Boolean = {
     (n + m) + l == n + (m + l)
@@ -66,15 +66,15 @@ object Monoid_Nat_proof {
     override def combine(a: Nat, b: Nat) = a + b
 
     override def law_leftIdentity = forall { (x: Nat) =>
-      super.law_leftIdentity because lemma_leftIdentityZeroPlus(x)
+      super.law_leftIdentity because lemma_leftIdentityZeroPlus(x).holds
     }
 
     override def law_rightIdentity = forall { (x: Nat) =>
-      super.law_rightIdentity because lemma_rightIdentityZeroPlus(x)
+      super.law_rightIdentity because lemma_rightIdentityZeroPlus(x).holds
     }
 
     override def law_associative = forall { (x: Nat, y: Nat, z: Nat) =>
-      super.law_associative because lemma_associativePlus(x, y, z)
+      super.law_associative because lemma_associativePlus(x, y, z).holds
     }
 
   }

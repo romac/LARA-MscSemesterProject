@@ -85,14 +85,14 @@ b = square (twice 42)
 
 Let's now imagine that some savy programmer comes across the following piece of code during a refactoring:
 
-```
+```haskell
 compute :: Num a => a -> a -> a -> a
 compute a b c = c * b + b * a
 ```
 
 While this is a perfectly good piece of code, she rightly realises that it could expressed a more concise manner, namely:
 
-```
+```haskell
 compute :: Num a => a -> a -> a -> a
 compute a b c = b * (a + c)
 ```
@@ -297,18 +297,23 @@ implicit object intProdMonoid extends Monoid[Int] {
 	override def combine(x: Int, y: Int): Int = x * y
 }
 
-def list[A](list: List[A])(implicit M: Monoid[A]): A = {
+def fold[A](list: List[A])(implicit M: Monoid[A]): A = {
 	list.foldRight(M.empty)(M.combine)
 }
 
 val list: List[Int] = List(2, 3)
-val res = fold(list)
+val res: Int = fold(list) // ?
 ```
 
 Once again, the Scala compiler bails out with an *ambiguous implicits* error but for good reasons this time. Indeed, depending on which instance of `Monoid[Int]` it picks, `res` can either be equal to $5$ or $6$. This issue arise because the two instances above are *overlapping*, which has the effect of making the type system *incoherent* [@Coherence]. For a type system to be coherent, "every valid typing derivation for a program [must lead] to a resulting program that has the same dynamic semantics", which is clearly not the case here.
+While in this specific example, the compiler will rightfully reject the program, this might always be possible as one could import a different instance in scope in two different modules, and then a third module might assume that these modules actually make use of the same instance, silently breaking the program. Imagine trying to merge two `Sets` that have been created with two different `Ord` instances in scope.
 
 Haskell partially solves this problem by enforcing that instances defined in the same module do not overlap, that is to say that the compiler would reject the program above. We deem Haskell's approach only partial as it allows the programmer to define two or more overlapping instances, provided that they are not defined in the same module. A program is then only rejected when the programmer makes imports such overlapping instances in scope and attempts to make use of them. This decision stems from the will to allow linking together two different libraries which both define a class instance for the same type.
 If one were to operate under a closed-world assumption, one could go further and disallow overlapping instances altogether which, as we will see, is the approach we have chosen in Stainless.
+
+While current versions of Scala provides no such mechanism to enforce coherence, its version 3.0 will at least improve over the existing situation by letting the programmer declare a class as being coherent [^7].
+
+[^7]: *Allow Typeclasses to Declare Themselves Coherent* <https://github.com/lampepfl/dotty/issues/2047>
 
 With a coherent type system, one might still want to provide both an additive and multiplicative `Monoid` instance for integers. To this end, one can wrap values of type `Int` with two different wrapper (value-)classes for which we will define the respective instances.
 
@@ -325,7 +330,11 @@ implicit object intProductMonoid extends Monoid[Product] {
 	override def empty: Product = Product(1)
 	override def combine(x: Int, y: Int): Product = Product(x.value * y.value)
 }
+```
 
+\pagebreak
+
+```scala
 def fold[A](list: List[A])(implicit M: Monoid[A]): A = {
 	list.foldRight(M.empty)(M.combine)
 }
@@ -335,7 +344,7 @@ def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
 }
 ```
 
-It then becomes possible to unambiguously pick which instances to use depending on the semantics we want.
+It then becomes possible to unambiguously pick which instance to use depending on the semantics we want.
 
 ```scala
 val list: List[Int] = List(2, 3)
@@ -349,24 +358,133 @@ val product: Int = foldMap(list)(Product(_)).value // 6
 ## Typeclasses in *Pure Scala*
 
 ```scala
-case class Eq[A](eq: (A, A) => Boolean) {
-  def neq(x: A, y: A): Boolean = !eq(x, y)
+import stainless.lang._
+import stainless.annotation._
+import stainless.collection._
+
+@coherent
+abstract class Semigroup[A] {
+
+	def combine(x: A, y: A): A
+
+	@law
+	def law_associative = forall { (x: A, y: A, z: A) =>
+		combine(combine(x, y), z) == combine(x, combine(y, z))
+	}
+
 }
 
-case class Ord[A](lte: (A, A) => Boolean)(implicit eqD: Eq[A]) {
-  def lt(x: A, y: A): Boolean = lte(x, y) && eqD.neq(x, y)
+@coherent
+abstract class Monoid[A](implicit val semigroup: Semigroup[A]) {
+
+	def empty: A
+
+	@inline
+	def combine(x: A, y: A): A = semigroup.combine(x, y)
+
+	@law
+	def law_leftIdentity = forall { (x: A) =>
+		semigroup.combine(empty, x) == x
+	}
+
+	@law
+	def law_rightIdentity = forall { (x: A) =>
+		semigroup.combine(x, empty) == x
+	}
+
 }
 
-implicit val eqInt: Eq[Int] = Eq[Int](_ == _)
-implicit val ordInt: Ord[Int] = Ord[Int](_ < _)
+case class Sum(value: Int)
 
-def gt[A](x: A, y: A)(implicit O: Ord[A]): Boolean = !O.lte(x, y)
-
-def lemma: Boolean = {
-  gt(100, 2) == true
+def lemma_sumAssociative(x: Sum, y: Sum, z: Sum): Boolean = {
+	Sum((x.value + y.value) + z.value) == Sum(x.value + (y.value + z.value))
 } holds
+
+implicit def intSumSemigroup: Semigroup[Sum] = new Semigroup[Sum] {
+
+	override def combine(x: Sum, y: Sum): Sum = Sum(x.value + y.value)
+
+	override def law_associative = super.law_associative because {
+		forall { (x: Sum, y: Sum, z: Sum) =>
+			lemma_sumAssociative(x, y, z)
+		}
+	}
+
+}
+
+implicit def intSumMonoid: Monoid[Sum] = new Monoid[Sum] {
+	override def empty: Sum = Sum(0)
+}
+
+def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
+	case Nil()       => M.empty
+	case Cons(x, xs) => M.combine(x, fold(xs))
+}
+
+def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
+	fold(list.map(f))
+}
 ```
 
+```scala
+import stainless.lang._
+import stainless.annotation._
+import stainless.collection._
+
+case class Semigroup[A](combine: (A, A) => A) {
+
+	require(law_associative)
+
+	def law_associative = forall { (x: A, y: A, z: A) =>
+		combine(combine(x, y), z) == combine(x, combine(y, z))
+	}
+
+}
+
+case class Monoid[A](val semigroup: Semigroup[A], empty: A) {
+
+	require(law_leftIdentity && law_rightIdentity)
+
+	@inline
+	def combine(x: A, y: A): A = semigroup.combine(x, y)
+
+	def law_leftIdentity = forall { (x: A) =>
+		semigroup.combine(empty, x) == x
+	}
+
+	def law_rightIdentity = forall { (x: A) =>
+		semigroup.combine(x, empty) == x
+	}
+
+}
+
+case class Sum(value: Int)
+
+def lemma_sumAssociative(x: Sum, y: Sum, z: Sum): Boolean = {
+	Sum((x.value + y.value) + z.value) == Sum(x.value + (y.value + z.value))
+} holds
+
+def intSumSemigroup: Semigroup[Sum] = {
+	require {
+		forall { (x: Sum, y: Sum, z: Sum) =>
+			lemma_sumAssociative(x, y, z)
+		}
+	}
+
+	Semigroup[Sum]((x: Sum, y: Sum) => Sum(x.value + y.value))
+}
+
+def intSumMonoid: Monoid[Sum] = Monoid[Sum](intSumSemigroup, Sum(0))
+
+def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
+	case Nil()       => M.empty
+	case Cons(x, xs) => M.combine(x, fold(xs))
+}
+
+def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
+	fold(list.map(f))
+}
+```
 
 # Results
 

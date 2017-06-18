@@ -364,34 +364,26 @@ import stainless.collection._
 
 @coherent
 abstract class Semigroup[A] {
-
 	def combine(x: A, y: A): A
 
-	@law
-	def law_associative = forall { (x: A, y: A, z: A) =>
+	@law def law_associative = forall { (x: A, y: A, z: A) =>
 		combine(combine(x, y), z) == combine(x, combine(y, z))
 	}
-
 }
 
 @coherent
 abstract class Monoid[A](implicit val semigroup: Semigroup[A]) {
-
 	def empty: A
 
-	@inline
-	def combine(x: A, y: A): A = semigroup.combine(x, y)
+	@inline def combine(x: A, y: A): A = semigroup.combine(x, y)
 
-	@law
-	def law_leftIdentity = forall { (x: A) =>
-		semigroup.combine(empty, x) == x
+	@law def law_leftIdentity = forall { (x: A) =>
+		combine(empty, x) == x
 	}
 
-	@law
-	def law_rightIdentity = forall { (x: A) =>
-		semigroup.combine(x, empty) == x
+	@law def law_rightIdentity = forall { (x: A) =>
+		combine(x, empty) == x
 	}
-
 }
 
 case class Sum(value: Int)
@@ -401,28 +393,16 @@ def lemma_sumAssociative(x: Sum, y: Sum, z: Sum): Boolean = {
 } holds
 
 implicit def intSumSemigroup: Semigroup[Sum] = new Semigroup[Sum] {
-
 	override def combine(x: Sum, y: Sum): Sum = Sum(x.value + y.value)
 
 	override def law_associative = super.law_associative because {
-		forall { (x: Sum, y: Sum, z: Sum) =>
-			lemma_sumAssociative(x, y, z)
-		}
+		forall { (x: Sum, y: Sum, z: Sum) => lemma_sumAssociative(x, y, z) }
 	}
 
 }
 
 implicit def intSumMonoid: Monoid[Sum] = new Monoid[Sum] {
 	override def empty: Sum = Sum(0)
-}
-
-def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
-	case Nil()       => M.empty
-	case Cons(x, xs) => M.combine(x, fold(xs))
-}
-
-def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
-	fold(list.map(f))
 }
 ```
 
@@ -432,30 +412,26 @@ import stainless.annotation._
 import stainless.collection._
 
 case class Semigroup[A](combine: (A, A) => A) {
-
 	require(law_associative)
 
 	def law_associative = forall { (x: A, y: A, z: A) =>
 		combine(combine(x, y), z) == combine(x, combine(y, z))
 	}
-
 }
 
 case class Monoid[A](val semigroup: Semigroup[A], empty: A) {
-
 	require(law_leftIdentity && law_rightIdentity)
 
 	@inline
 	def combine(x: A, y: A): A = semigroup.combine(x, y)
 
 	def law_leftIdentity = forall { (x: A) =>
-		semigroup.combine(empty, x) == x
+		combine(empty, x) == x
 	}
 
 	def law_rightIdentity = forall { (x: A) =>
-		semigroup.combine(x, empty) == x
+		combine(x, empty) == x
 	}
-
 }
 
 case class Sum(value: Int)
@@ -466,27 +442,32 @@ def lemma_sumAssociative(x: Sum, y: Sum, z: Sum): Boolean = {
 
 def intSumSemigroup: Semigroup[Sum] = {
 	require {
-		forall { (x: Sum, y: Sum, z: Sum) =>
-			lemma_sumAssociative(x, y, z)
-		}
+		forall { (x: Sum, y: Sum, z: Sum) => lemma_sumAssociative(x, y, z) }
 	}
-
 	Semigroup[Sum]((x: Sum, y: Sum) => Sum(x.value + y.value))
 }
 
 def intSumMonoid: Monoid[Sum] = Monoid[Sum](intSumSemigroup, Sum(0))
-
-def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
-	case Nil()       => M.empty
-	case Cons(x, xs) => M.combine(x, fold(xs))
-}
-
-def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
-	fold(list.map(f))
-}
 ```
 
 # Results
+
+ | Testcase              | Result  | ADT invariant (s)                                | Total time (s) | 
+ | --------------------- | ------  | --------------------------------------           | -------------- | 
+ | AnyMonoid             | valid   | 0.222 (`Monoid[Any]`)                            | 5.236          | 
+ | FirstMonoid           | valid   | 1.107 (`Monoid[First]`)                          | 3.796          | 
+ | IntMonoid             | valid   | 2.746 (`Monoid[Int]`)                            | 4.951          | 
+ | SumMonoid             | valid   | 0.214 (`Monoid[Sum]`)                            | 5.811          | 
+ | SemigroupMonoid       | valid   | 0.431 (`Monoid[Int]`) / 1.044 (`Semigroup[Int]`) | 4.856          | 
+ | Newtype               | valid   | 0.133 (`Newtype[Sum, BigInt]`)                   | 10.178         | 
+ | EqOrd_partial         | valid   | 1.536 (`Eq[Int]`) / 1.725 (`Ord[Int]`)           | 5.835          | 
+ | EqOrd_full            | timeout | -                                                | -              | 
+ | EndoMonoid            | timeout | -                                                | -              | 
+ | ListMonoid            | timeout | -                                                | -              | 
+ | NatMonoid             | timeout | -                                                | -              | 
+ | OptionMonoid          | timeout | -                                                | -              | 
+ | NonEmptySemigroup     | timeout | -                                                | -              | 
+ | Uniplate              | timeout | -                                                | -              | 
 
 # Further work
 

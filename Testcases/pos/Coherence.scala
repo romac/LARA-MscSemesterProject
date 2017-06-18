@@ -27,5 +27,14 @@ object TCEq {
     set1 == set2
   } holds
 
+  def lemma_ab(a: Monoid[Int], b: Monoid[Int]) = {
+    a == b
+  } holds
+
+  // def lemma_set_int(a: Set[Monoid[Int]], b: Set[Monoid[Int]]) = {
+  //   require(!a.isEmpty && !b.isEmpty)
+  //   a == b
+  // } holds
+
 }
 

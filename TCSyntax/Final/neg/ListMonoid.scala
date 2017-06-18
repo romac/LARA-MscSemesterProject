@@ -65,15 +65,15 @@ object ListMonoid {
       x ++ y
 
     override def law_leftIdentity = forall { (x: List[A]) =>
-      super.law_leftIdentity because lemma_listLeftIdentity(x).holds
+      super.law_leftIdentity because lemma_listLeftIdentity(x)
     }
 
     override def law_rightIdentity = forall { (x: List[A]) =>
-      super.law_rightIdentity because lemma_listRightIdentity(x).holds
+      super.law_rightIdentity because lemma_listRightIdentity(x)
     }
 
     override def law_associative = forall { (x: List[A], y: List[A], z: List[A]) =>
-      super.law_associative because lemma_listAssoc(x, y, z).holds
+      super.law_associative because lemma_listAssoc(x, y, z)
     }
   }
 
@@ -85,13 +85,6 @@ object ListMonoid {
   def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
     fold(list.map(f))
   }
-
-  // def test = {
-  //   val xs: List[BigInt] = List(1, 2, 3)
-  //   val ys: List[BigInt] = List(4, 5, 6)
-  //   val res: List[BigInt] = xs <> ys
-  //   res == List(1, 2, 3, 4, 5, 6)
-  // }.holds
 
   def test_append = {
     val xs: List[List[BigInt]] = List(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))

@@ -452,22 +452,28 @@ def intSumMonoid: Monoid[Sum] = Monoid[Sum](intSumSemigroup, Sum(0))
 
 # Results
 
- | Testcase              | Result  | ADT invariant (s)                                | Total time (s) | 
- | --------------------- | ------  | --------------------------------------           | -------------- | 
- | AnyMonoid             | valid   | 0.222 (`Monoid[Any]`)                            | 5.236          | 
- | FirstMonoid           | valid   | 1.107 (`Monoid[First]`)                          | 3.796          | 
- | IntMonoid             | valid   | 2.746 (`Monoid[Int]`)                            | 4.951          | 
- | SumMonoid             | valid   | 0.214 (`Monoid[Sum]`)                            | 5.811          | 
- | SemigroupMonoid       | valid   | 0.431 (`Monoid[Int]`) / 1.044 (`Semigroup[Int]`) | 4.856          | 
- | Newtype               | valid   | 0.133 (`Newtype[Sum, BigInt]`)                   | 10.178         | 
- | EqOrd_partial         | valid   | 1.536 (`Eq[Int]`) / 1.725 (`Ord[Int]`)           | 5.835          | 
- | EqOrd_full            | timeout | -                                                | -              | 
- | EndoMonoid            | timeout | -                                                | -              | 
- | ListMonoid            | timeout | -                                                | -              | 
- | NatMonoid             | timeout | -                                                | -              | 
- | OptionMonoid          | timeout | -                                                | -              | 
- | NonEmptySemigroup     | timeout | -                                                | -              | 
- | Uniplate              | timeout | -                                                | -              | 
+| Testcase              | Instance                          | Result  | ADT invariant (s)                                | Total time (s) | 
+| --------------------- | --------------------------------- | ------  | ------------------------------------------------ | -------------- | 
+| AnyMonoid             | `Monoid[Any]`                     | valid   | 0.222                                            | 5.236          | 
+| FirstMonoid           | `Monoid[First]`                   | valid   | 1.107                                            | 3.796          | 
+| IntMonoid             | `Monoid[Int]` (additive)          | valid   | 2.746                                            | 4.951          | 
+| SumMonoid             | `Monoid[Sum]`                     | valid   | 0.214                                            | 5.811          | 
+| SemigroupMonoid       | `Monoid[Int]` (additive)          | valid   | 0.431                                            | 4.856          | 
+| SemigroupMonoid       | `Semigroup[Int]` (additive)       | valid   | 1.044                                            | 4.856          | 
+| Newtype               | `Newtype[Sum, BigInt]`            | valid   | 0.133                                            | 10.178         | 
+| EqOrd_partial         | `Eq[Int]`                         | valid   | 1.536                                            | 5.835          | 
+| EqOrd_partial         | `Ord[Int]`                        | valid   | 1.725                                            | 5.835          | 
+| EqOrd_full            | `Eq[Int]`                         | timeout | -                                                | -              | 
+| EqOrd_full            | `Ord[Int]`                        | timeout | -                                                | -              | 
+| EndoMonoid            | `Monoid[Endo]`                    | timeout | -                                                | -              | 
+| ListMonoid            | `Monoid[List]`                    | timeout | -                                                | -              | 
+| NatMonoid             | `Monoid[Nat]`                     | timeout | -                                                | -              | 
+| OptionMonoid          | `Monoid[Option]`                  | timeout | -                                                | -              | 
+| NonEmptySemigroup     | `Semigroup[NonEmpty]`             | timeout | -                                                | -              | 
+| Uniplate              | `Uniplate[Expr]`                  | timeout | -                                                | -              | 
+| Semiring              | `Semiring[Int]` (disjunctive)     | timeout | -                                                | -              | 
+| Semiring              | `Semiring[Boolean]` (disjunctive) | timeout | -                                                | -              | 
+| Semiring              | `Semiring[Boolean]` (conjunctive) | timeout | -                                                | -              | 
 
 # Further work
 

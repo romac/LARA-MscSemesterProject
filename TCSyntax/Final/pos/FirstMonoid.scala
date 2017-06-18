@@ -3,7 +3,7 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object OptionMonoid {
+object FirstMonoid {
 
   abstract class Monoid[A] {
 
@@ -28,17 +28,17 @@ object OptionMonoid {
 
   }
 
-  object Monoid {
-    def apply[A](implicit M: Monoid[A]): Monoid[A] = M
+  final case class First[A](getFirst: Option[A])
+
+  object First {
+    def apply[A](a: A): First[A] = First(Some(a))
   }
 
-  implicit def optionMonoid[A](implicit M: Monoid[A]): Monoid[Option[A]] = new Monoid[Option[A]] {
-    def empty: Option[A] = None()
-
-    def append(x: Option[A], y: Option[A]): Option[A] = (x, y) match {
-      case (None(), a) => a
-      case (a, None()) => a
-      case (Some(a), Some(b)) => Some(M.append(a, b))
+  implicit def firstMonoid[A]: Monoid[First[A]] = new Monoid[First[A]] {
+    def empty: First[A] = First(None[A]())
+    def append(x: First[A], y: First[A]): First[A] = x.getFirst match {
+      case Some(a) => x
+      case None() => y
     }
   }
 
@@ -50,6 +50,12 @@ object OptionMonoid {
   def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
     fold(list.map(f))
   }
+
+  // def lemma_foldMap_first = {
+  //   val xs = List(true, false, false)
+  //   val first = foldMap(xs)(First(_)).getFirst
+  //   first == Some(true)
+  // } holds
 
 }
 

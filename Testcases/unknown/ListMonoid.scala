@@ -34,10 +34,6 @@ object ListMonoid {
     def apply[A](implicit M: Monoid[A]): Monoid[A] = M
   }
 
-  // implicit class MonoidSyntax[A](self: A)(implicit val M: Monoid[A]) {
-  //   def <>(other: A): A = M.append(self, other)
-  // }
-
   @induct
   @inline
   def lemma_listLeftIdentity[A](x: List[A]) = {

@@ -22,10 +22,10 @@ object EqOrd {
       eq(x, y) == eq(y, x)
     }
 
-    // @law
-    // def law_transitive: Boolean = forall { (x: A, y: A, z: A) =>
-    //   (eq(x, y) && eq(y, z)) ==> eq(x, z)
-    // }
+    @law
+    def law_transitive: Boolean = forall { (x: A, y: A, z: A) =>
+      (eq(x, y) && eq(y, z)) ==> eq(x, z)
+    }
 
   }
 
@@ -38,15 +38,15 @@ object EqOrd {
 
     def lte(x: A, y: A): Boolean
 
-    // @law
-    // def law_transitive: Boolean = forall { (x: A, y: A, z: A) =>
-    //   (lte(x, y) && lte(y, z)) ==> lte(x, z)
-    // }
+    @law
+    def law_transitive: Boolean = forall { (x: A, y: A, z: A) =>
+      (lte(x, y) && lte(y, z)) ==> lte(x, z)
+    }
 
-    // @law
-    // def law_eq: Boolean = forall { (x: A, y: A) =>
-    //   (lte(x, y) && lte(y, x)) ==> eq.eq(x, y)
-    // }
+    @law
+    def law_eq: Boolean = forall { (x: A, y: A) =>
+      (lte(x, y) && lte(y, x)) ==> eq.eq(x, y)
+    }
 
     @law
     def law_antisymetric: Boolean = forall { (x: A, y: A) =>

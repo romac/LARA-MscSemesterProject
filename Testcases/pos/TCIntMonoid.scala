@@ -3,7 +3,7 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object TCIntMonoid {
+object TCBigIntMonoid {
 
   abstract class Monoid[A] {
 
@@ -28,9 +28,9 @@ object TCIntMonoid {
 
   }
 
-  implicit object intAddMonoidObj extends Monoid[Int] {
-    def empty: Int = 0
-    def append(x: Int, y: Int): Int = x + y
+  implicit object bigIntMonoid extends Monoid[BigInt] {
+    def empty: BigInt = 0
+    def append(x: BigInt, y: BigInt): BigInt = x + y
   }
 
   def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {

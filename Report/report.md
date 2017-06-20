@@ -533,28 +533,28 @@ def lemma3 = {
 
 We have tested our implementation over a corpus of typeclasses [^8] and some of their possible instances. Below are the verification results of each testcase:
 
-| Testcase              | Instance                          | Result  | ADT invariant (s)                                | Total time (s) | 
-| --------------------- | --------------------------------- | ------  | ------------------------------------------------ | -------------- | 
-| AnyMonoid             | `Monoid[Any]`                     | valid   | 0.222                                            | 5.236          | 
-| FirstMonoid           | `Monoid[First]`                   | valid   | 1.107                                            | 3.796          | 
-| IntMonoid             | `Monoid[Int]` (additive)          | valid   | 2.746                                            | 4.951          | 
-| SumMonoid             | `Monoid[Sum]`                     | valid   | 0.214                                            | 5.811          | 
-| SemigroupMonoid       | `Monoid[Int]` (additive)          | valid   | 0.431                                            | 4.856          | 
-| SemigroupMonoid       | `Semigroup[Int]` (additive)       | valid   | 1.044                                            | 4.856          | 
-| Newtype               | `Newtype[Sum, BigInt]`            | valid   | 0.133                                            | 10.178         | 
-| EqOrd_partial         | `Eq[Int]`                         | valid   | 1.536                                            | 5.835          | 
-| EqOrd_partial         | `Ord[Int]`                        | valid   | 1.725                                            | 5.835          | 
-| EqOrd_full            | `Eq[Int]`                         | timeout | -                                                | -              | 
-| EqOrd_full            | `Ord[Int]`                        | timeout | -                                                | -              | 
-| EndoMonoid            | `Monoid[Endo]`                    | timeout | -                                                | -              | 
-| ListMonoid            | `Monoid[List]`                    | timeout | -                                                | -              | 
-| NatMonoid             | `Monoid[Nat]`                     | timeout | -                                                | -              | 
-| OptionMonoid          | `Monoid[Option]`                  | timeout | -                                                | -              | 
-| NonEmptySemigroup     | `Semigroup[NonEmpty]`             | timeout | -                                                | -              | 
-| Uniplate              | `Uniplate[Expr]`                  | timeout | -                                                | -              | 
-| Semiring              | `Semiring[Int]` (disjunctive)     | timeout | -                                                | -              | 
-| Semiring              | `Semiring[Boolean]` (disjunctive) | timeout | -                                                | -              | 
-| Semiring              | `Semiring[Boolean]` (conjunctive) | timeout | -                                                | -              | 
+| Testcase              | Instance                          | Result  | ADT invariant (s)  | Total time (s) | 
+| --------------------- | --------------------------------- | ------  | ------------------ | -------------- | 
+| AnyMonoid             | `Monoid[Any]`                     | valid   | 0.222              | 5.236          | 
+| FirstMonoid           | `Monoid[First]`                   | valid   | 1.107              | 3.796          | 
+| IntMonoid             | `Monoid[Int]` (additive)          | valid   | 2.746              | 4.951          | 
+| SumMonoid             | `Monoid[Sum]`                     | valid   | 0.214              | 5.811          | 
+| SemigroupMonoid       | `Monoid[Int]` (additive)          | valid   | 0.431              | 4.856          | 
+| SemigroupMonoid       | `Semigroup[Int]` (additive)       | valid   | 1.044              | 4.856          | 
+| Newtype               | `Newtype[Sum, BigInt]`            | valid   | 0.133              | 10.178         | 
+| EqOrd_partial         | `Eq[Int]`                         | valid   | 1.536              | 5.835          | 
+| EqOrd_partial         | `Ord[Int]`                        | valid   | 1.725              | 5.835          | 
+| EqOrd_full            | `Eq[Int]`                         | timeout | -                  | -              | 
+| EqOrd_full            | `Ord[Int]`                        | timeout | -                  | -              | 
+| EndoMonoid            | `Monoid[Endo]`                    | timeout | -                  | -              | 
+| ListMonoid            | `Monoid[List]`                    | timeout | -                  | -              | 
+| NatMonoid             | `Monoid[Nat]`                     | timeout | -                  | -              | 
+| OptionMonoid          | `Monoid[Option]`                  | timeout | -                  | -              | 
+| NonEmptySemigroup     | `Semigroup[NonEmpty]`             | timeout | -                  | -              | 
+| Uniplate              | `Uniplate[Expr]`                  | timeout | -                  | -              | 
+| Semiring              | `Semiring[Int]` (disjunctive)     | timeout | -                  | -              | 
+| Semiring              | `Semiring[Boolean]` (disjunctive) | timeout | -                  | -              | 
+| Semiring              | `Semiring[Boolean]` (conjunctive) | timeout | -                  | -              | 
 
 [^8]: <https://github.com/romac/LARA-MscSemesterProject/tree/master/Testcases/>
 

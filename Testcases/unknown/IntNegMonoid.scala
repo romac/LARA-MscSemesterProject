@@ -28,9 +28,9 @@ object IntNegMonoid {
 
   }
 
-  implicit object intNegMonoid extends Monoid[Int] {
-    def empty: Int = 0
-    def append(x: Int, y: Int): Int = x - y
+  implicit object intNegMonoid extends Monoid[BigInt] {
+    def empty: BigInt = 0
+    def append(x: BigInt, y: BigInt): BigInt = x - y
   }
 
 }

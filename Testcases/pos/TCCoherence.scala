@@ -3,7 +3,7 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object TCEq {
+object TCCoherence {
 
   @coherent
   abstract class Monoid[A] {
@@ -30,11 +30,6 @@ object TCEq {
   def lemma_ab(a: Monoid[Int], b: Monoid[Int]) = {
     a == b
   } holds
-
-  // def lemma_set_int(a: Set[Monoid[Int]], b: Set[Monoid[Int]]) = {
-  //   require(!a.isEmpty && !b.isEmpty)
-  //   a == b
-  // } holds
 
 }
 

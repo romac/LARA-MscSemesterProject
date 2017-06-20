@@ -3,7 +3,7 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object FirstMonoid {
+object TCMonoidAny {
 
   abstract class Monoid[A] {
 
@@ -28,18 +28,11 @@ object FirstMonoid {
 
   }
 
-  final case class First[A](getFirst: Option[A])
+  final case class Any(value: Boolean)
 
-  object First {
-    def apply[A](a: A): First[A] = First(Some(a))
-  }
-
-  implicit def firstMonoid[A]: Monoid[First[A]] = new Monoid[First[A]] {
-    def empty: First[A] = First(None[A]())
-    def append(x: First[A], y: First[A]): First[A] = x.getFirst match {
-      case Some(a) => x
-      case None() => y
-    }
+  implicit def anyMonoid = new Monoid[Any] {
+    def empty: Any = Any(false)
+    def append(x: Any, y: Any): Any = Any(x.value || y.value)
   }
 
   def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
@@ -51,11 +44,17 @@ object FirstMonoid {
     fold(list.map(f))
   }
 
-  // def lemma_foldMap_first = {
-  //   val xs = List(true, false, false)
-  //   val first = foldMap(xs)(First(_)).getFirst
-  //   first == Some(true)
-  // } holds
+  def lemma_foldMap_false = {
+    val xs = List(false, false, false)
+    val sum = foldMap(xs)(Any(_))
+    sum.value == false
+  } holds
+
+  def lemma_foldMap_true = {
+    val xs = List(false, true, false)
+    val sum = foldMap(xs)(Any(_))
+    sum.value == true
+  } holds
 
 }
 

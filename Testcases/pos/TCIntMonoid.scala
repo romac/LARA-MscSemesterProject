@@ -3,7 +3,7 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object AnyMonoid {
+object TCIntMonoid {
 
   abstract class Monoid[A] {
 
@@ -28,33 +28,15 @@ object AnyMonoid {
 
   }
 
-  final case class Any(value: Boolean)
-
-  implicit def anyMonoid = new Monoid[Any] {
-    def empty: Any = Any(false)
-    def append(x: Any, y: Any): Any = Any(x.value || y.value)
+  implicit object intAddMonoidObj extends Monoid[Int] {
+    def empty: Int = 0
+    def append(x: Int, y: Int): Int = x + y
   }
 
   def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
     case Nil()       => M.empty
     case Cons(x, xs) => M.append(x, fold(xs))
   }
-
-  def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
-    fold(list.map(f))
-  }
-
-  def lemma_foldMap_false = {
-    val xs = List(false, false, false)
-    val sum = foldMap(xs)(Any(_))
-    sum.value == false
-  } holds
-
-  def lemma_foldMap_true = {
-    val xs = List(false, true, false)
-    val sum = foldMap(xs)(Any(_))
-    sum.value == true
-  } holds
 
 }
 

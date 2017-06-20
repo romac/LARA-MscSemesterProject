@@ -3,7 +3,7 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object MonoidTC {
+object TCSemigroupMonoid {
 
   @coherent
   abstract class Semigroup[A] {

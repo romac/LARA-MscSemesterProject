@@ -2,7 +2,7 @@
 import stainless.lang._
 import stainless.annotation._
 
-object EqOrd {
+object TCEqOrdPartial {
 
   @coherent
   abstract class Eq[A] {
@@ -64,7 +64,7 @@ object EqOrd {
 
   }
 
-  implicit val intOrd: Ord[BigInt] = new Ord[BigInt] {
+  implicit val bigIntOrd: Ord[BigInt] = new Ord[BigInt] {
     def lte(x: BigInt, y: BigInt) = x <= y
   }
 

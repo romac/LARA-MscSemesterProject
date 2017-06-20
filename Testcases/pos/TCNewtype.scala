@@ -4,7 +4,7 @@ import stainless.collection._
 import stainless.annotation._
 import stainless.proof._
 
-object NT {
+object TCNewtype {
 
   @coherent
   abstract class Newtype[N, O] {

@@ -3,7 +3,7 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object IntMonoidObj {
+object TCMonoidSum {
 
   abstract class Monoid[A] {
 
@@ -28,15 +28,33 @@ object IntMonoidObj {
 
   }
 
-  implicit object intAddMonoidObj extends Monoid[Int] {
-    def empty: Int = 0
-    def append(x: Int, y: Int): Int = x + y
+  final case class Sum(value: BigInt)
+
+  implicit def sumMonoid = new Monoid[Sum] {
+    def empty: Sum = Sum(0)
+    def append(x: Sum, y: Sum): Sum = Sum(x.value + y.value)
   }
 
   def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
     case Nil()       => M.empty
     case Cons(x, xs) => M.append(x, fold(xs))
   }
+
+  def foldMap[A, B](list: List[A])(f: A => B)(implicit M: Monoid[B]): B = {
+    fold(list.map(f))
+  }
+
+  def lemma_fold = {
+    val xs: List[BigInt] = List(1, 2, 3)
+    val sum = fold(xs.map(Sum(_)))
+    sum.value == 6
+  } holds
+
+  def lemma_foldMap = {
+    val xs: List[BigInt] = List(1, 2, 3)
+    val sum = foldMap(xs)(Sum(_))
+    sum.value == 6
+  } holds
 
 }
 

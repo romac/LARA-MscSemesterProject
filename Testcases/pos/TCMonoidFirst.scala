@@ -3,7 +3,7 @@ import stainless.lang._
 import stainless.annotation._
 import stainless.collection._
 
-object SumMonoid {
+object TCMonoidFirst {
 
   abstract class Monoid[A] {
 
@@ -28,11 +28,18 @@ object SumMonoid {
 
   }
 
-  final case class Sum(value: BigInt)
+  final case class First[A](getFirst: Option[A])
 
-  implicit def sumMonoid = new Monoid[Sum] {
-    def empty: Sum = Sum(0)
-    def append(x: Sum, y: Sum): Sum = Sum(x.value + y.value)
+  object First {
+    def apply[A](a: A): First[A] = First(Some(a))
+  }
+
+  implicit def firstMonoid[A]: Monoid[First[A]] = new Monoid[First[A]] {
+    def empty: First[A] = First(None[A]())
+    def append(x: First[A], y: First[A]): First[A] = x.getFirst match {
+      case Some(a) => x
+      case None() => y
+    }
   }
 
   def fold[A](list: List[A])(implicit M: Monoid[A]): A = list match {
@@ -44,17 +51,11 @@ object SumMonoid {
     fold(list.map(f))
   }
 
-  def lemma_fold = {
-    val xs: List[BigInt] = List(1, 2, 3)
-    val sum = fold(xs.map(Sum(_)))
-    sum.value == 6
-  } holds
-
-  def lemma_foldMap = {
-    val xs: List[BigInt] = List(1, 2, 3)
-    val sum = foldMap(xs)(Sum(_))
-    sum.value == 6
-  } holds
+  // def lemma_foldMap_first = {
+  //   val xs = List(true, false, false)
+  //   val first = foldMap(xs)(First(_)).getFirst
+  //   first == Some(true)
+  // } holds
 
 }
 

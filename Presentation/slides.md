@@ -62,25 +62,27 @@ A set $S$ with some binary operation $\oplus : S \times S \to S$ is a **monoid**
 
 # Why do we care?
 
-* Enables equational reasoning at scale [^scale]
-* Gives rise to powerful, composable abstractions [^abs]
-* Allows us to build (and verify!) programs the same way we do mathematics [^cat]
+Algebraic structures...
+
+* enable equational reasoning at scale [^scale]
+* give rise to powerful, composable abstractions [^abs]
+* allow us to build (and verify!) programs the same way we do mathematics [^cat]
 
 [^scale]: <https://haskellforall.com/2014/07/equational-reasoning-at-scale.html>
 [^abs]: <https://haskellforall.com/2014/04/scalable-program-architectures.html>
 [^cat]: <https://haskellforall.com/2012/08/the-category-design-pattern.html>
 
-# Why do we care?
+# Programs as proofs
 
--------------------------------------------------------------------------------------------------------------------------
-Programming                                                    Mathematics
-------------------------------------------------------------   ----------------------------------------------------------
-Build small components that we can verify in isolation.        Build small proofs that we can prove correct in isolation.
+---------------------------------------------------------------------------------------------------------------------
+Mathematics                                                  Programming
+----------------------------------------------------------   --------------------------------------------------------
+Build small proofs that we can prove correct in isolation.   Build small components that we can verify in isolation.
 
-\noindent\rule[0.5ex]{\linewidth}{0.5pt}                         \noindent\rule[0.5ex]{\linewidth}{0.5pt}
+  \noindent\rule[0.5ex]{\linewidth}{0.5pt}                   \noindent\rule[0.5ex]{\linewidth}{0.5pt}
 
-Compose smaller components into larger components.             Compose smaller proofs into larger proofs.
--------------------------------------------------------------------------------------------------------------------------
+Compose smaller proofs into larger proofs.                   Compose smaller components into larger components.
+----------------------------------------------------------   --------------------------------------------------------
 
 
 # Algebra and programming

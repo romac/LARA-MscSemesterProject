@@ -44,6 +44,22 @@ Functor, Monad, Comonad, Profunctor, Adjunctions
 
 Foldable, Traversable, Alternative
 
+# Example
+
+## Monoid
+
+A set $S$ with some binary operation $\oplus : S \times S \to S$ is a **monoid** if the following axioms are satisfied:
+
+- **Associativity:** $\forall a, b, c \in S. (a \oplus b) \oplus c = a \oplus (b \oplus )$.
+- **Identity:** $\exists e \in S. \forall a \in S. e \oplus a = a \oplus e = a$
+
+## Examples
+
+- Integers under addition/multiplication ($oplus = + / \times$, $e = 0 / 1$)
+- Lists ($\oplus = \texttt{++}$, $e = Nil$)
+- Endomorphisms ($\oplus = \circ$, $e = \textbackslash x \to x$)
+- And many others...
+
 # Why do we care?
 
 * Enables equational reasoning at scale [^scale]
@@ -61,28 +77,15 @@ Programming                                                    Mathematics
 ------------------------------------------------------------   ----------------------------------------------------------
 Build small components that we can verify in isolation.        Build small proofs that we can prove correct in isolation.
 
+\noindent\rule[0.5ex]{\linewidth}{0.5pt}                         \noindent\rule[0.5ex]{\linewidth}{0.5pt}
+
 Compose smaller components into larger components.             Compose smaller proofs into larger proofs.
 -------------------------------------------------------------------------------------------------------------------------
 
-# Example
 
-## Monoid
+# Algebra and programming
 
-A set $S$ with some binary operation $\oplus : S \times S \to S$ is a **monoid** if the following axioms are satisfied:
-
-- **Associativity:** $\forall a, b, c \in S. (a \oplus b) \oplus c = a \oplus (b \oplus )$.
-- **Identity:** $\exists e \in S. \forall a \in S. e \oplus a = a \oplus e = a$
-
-## Examples
-
-- Integers under addition/multiplication ($oplus = + / \times$, $e = 0 / 1$)
-- Lists ($\oplus = \texttt{++}$, $e = Nil$)
-- Endomorphisms ($\oplus = \circ$, $e = \textbackslash x \to x$)
-- And many others...
-
-# In programming
-
-How to take advantage of these structures in everyday programming?
+How to take advantage of these structures to actually build programs?
 
 . . .
 
@@ -95,7 +98,7 @@ Typeclasses!
 # Typeclasses
 
 - Introduced by Wadler [@AdHocPolymorphism] in 1989 as principled way to implement overloading (*ad-hoc polymorphism*) in functional languages
-- Works very well for expressing and taking advantage of algebraic structures found in datatypes
+- Very well suited for expressing algebraic structures found in datatypes
 
 ```haskell
 class Monoid a where
@@ -371,6 +374,16 @@ def mapReduce[A, M : Monoid](f: A => M)(xs: List[A]): M = {
   Monoid[M].concat(xs.par.map(f))
 }
 
-val sum = mapReduce(Sum(_))(List(1, 2, 3, 4)).value // 10
+case class Document(/* ... */)
+case class WordCount(value: Map[String, Int]) extends AnyVal
+
+implicit val wcm = new Monoid[WordCount] { /* ... */ }
+
+def countWords(doc: Document): WordCount = /* ... */
+
+val docs: List[Document] = /* ... */
+
+val wordsCounts: Map[String, Int] =
+  mapReduce(countWords)(docs).value
 ```
 
